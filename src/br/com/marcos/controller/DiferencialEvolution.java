@@ -73,7 +73,7 @@ public class DiferencialEvolution {
         ind_noise.setX(ind1.getX()-ind2.getX());
         ind_noise.setY(ind1.getY()-ind2.getY());
         
-        
+        return ind_noise; //Provisiorio, mudar isso
     }
     
     static int[] random_numbers_not_repeat(int a, int b, int amount_numbers){
