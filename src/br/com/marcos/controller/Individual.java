@@ -10,6 +10,16 @@ package br.com.marcos.controller;
  * @author marcos
  */
 public class Individual {
+    
+    double x,y, fitness;
+
+    public double getFitness() {
+        return fitness;
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
+    }
 
     public double getX() {
         return x;
@@ -26,6 +36,6 @@ public class Individual {
     public void setY(double y) {
         this.y = y;
     }
-    double x,y;
+    
     
 }
