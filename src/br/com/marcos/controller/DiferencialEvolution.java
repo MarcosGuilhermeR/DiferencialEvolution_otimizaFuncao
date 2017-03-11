@@ -6,7 +6,6 @@
 package br.com.marcos.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,14 +23,13 @@ public class DiferencialEvolution {
         population = new Individual[AMOUNT_INDIVIDUALS];
 
         generatePopulation(population);
-        calculate_fitness_individual(population);
+        calculate_fitness_population(population);
 
         for (int i = 0; i < 1000; i++) {
             generate_new_population(population);
             Individual betterIndividual = get_better_individual(population);
-            System.out.println("Menor Fitness: X="+betterIndividual.getX() + " Y=" + betterIndividual.getY() + " F= " + betterIndividual.getFitness() + " Média Fitness: " + calculate_avgfitness_population(population));
+            System.out.println("Menor Fitness: X=" + betterIndividual.getX() + " Y=" + betterIndividual.getY() + " F= " + betterIndividual.getFitness() + " Média Fitness: " + get_avg_fitness_population(population));
         }
-        generate_new_population(population);
 
     }
 
@@ -59,9 +57,9 @@ public class DiferencialEvolution {
             vector_noise = diference_and_mutation(population, i);
             ind_experiment = cross_breeding(population[i], vector_noise);
 
-            calculateFitness(ind_experiment);
+            calculate_fitness_individual(ind_experiment);
 
-            select(population, i, ind_experiment);
+            select_better_individual(population, i, ind_experiment);
         }
     }
 
@@ -99,7 +97,6 @@ public class DiferencialEvolution {
 
     public static Individual diference_and_mutation(Individual population[], int i) {
         Individual ind1, ind2, ind3, ind_diference = new Individual(), ind_noise = new Individual();
-        int i1, i2, i3;
 
         int numbers[] = random_numbers_not_repeat(0, AMOUNT_INDIVIDUALS - 1, 3);
 
@@ -117,7 +114,7 @@ public class DiferencialEvolution {
         ind_noise.setX(ind_diference.getX() + ind3.getX());
         ind_noise.setY(ind_diference.getY() + ind3.getY());
 
-        return ind_noise; //Provisiorio, mudar isso
+        return ind_noise;
     }
 
     static int[] random_numbers_not_repeat(int a, int b, int amount_numbers) {
@@ -139,13 +136,7 @@ public class DiferencialEvolution {
         return vector_return;
     }
 
-    public static void evaluatePopulation(Individual population[]) {
-        for (int i = 0; i < population.length; i++) {
-            calculateFitness(population[i]);
-        }
-    }
-
-    public static void calculateFitness(Individual individual) {
+    public static void calculate_fitness_individual(Individual individual) {
         double fitness;
         double x, y;
 
@@ -157,7 +148,7 @@ public class DiferencialEvolution {
         individual.setFitness(fitness);
     }
 
-    public static double calculate_avgfitness_population(Individual[] population) {
+    public static double get_avg_fitness_population(Individual[] population) {
         double soma = 0;
         for (int i = 0; i < population.length; i++) {
             Individual individual = population[i];
@@ -167,25 +158,14 @@ public class DiferencialEvolution {
         return media;
     }
 
-    public static void calculate_fitness_individual(Individual[] population) {
-        double fitness;
-        double x, y;
-
+    public static void calculate_fitness_population(Individual[] population) {
+        
         for (int i = 0; i < population.length; i++) {
-            Individual individual = population[i];
-
-            x = individual.getX();
-            y = individual.getY();
-
-            fitness = 0.26 * (x * x + y * y) - 0.48 * x * y;
-
-            individual.setFitness(fitness);
-
-            population[i] = individual;
+            calculate_fitness_individual(population[i]);
         }
     }
 
-    private static void select(Individual[] population, int i, Individual ind_experiment) {
+    private static void select_better_individual(Individual[] population, int i, Individual ind_experiment) {
 
         if (ind_experiment.getFitness() < population[i].getFitness()) {
             population[i] = ind_experiment;
