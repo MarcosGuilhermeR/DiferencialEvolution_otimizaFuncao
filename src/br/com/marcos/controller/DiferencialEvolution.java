@@ -5,9 +5,19 @@
  */
 package br.com.marcos.controller;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -19,7 +29,12 @@ public class DiferencialEvolution {
     static final int AMOUNT_INDIVIDUALS = 20;
     static final double F = 0.5;
 
-    public static void main(String[] args) {
+    
+
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        XYSeries melhorFitness = new XYSeries("Imagem Melhor Fitness");
+        XYSeries mediaFitness = new XYSeries("Imagem Media Indivíduos");
+    
         population = new Individual[AMOUNT_INDIVIDUALS];
 
         generatePopulation(population);
@@ -28,9 +43,25 @@ public class DiferencialEvolution {
         for (int i = 0; i < 1000; i++) {
             generate_new_population(population);
             Individual betterIndividual = get_better_individual(population);
-            System.out.println("Menor Fitness: X=" + betterIndividual.getX() + " Y=" + betterIndividual.getY() + " F= " + betterIndividual.getFitness() + " Média Fitness: " + get_avg_fitness_population(population));
+            double media = get_avg_fitness_population(population);
+            System.out.println("img ind melhor Fitness: X=" + betterIndividual.getX() + " Y=" + betterIndividual.getY() + " F= " + betterIndividual.getFitness() + " img Média individuos: " + media);
+            melhorFitness.add(i, betterIndividual.getFitness());
+            mediaFitness.add(i, media);
         }
-
+        
+        XYSeriesCollection graficoFitness = new XYSeriesCollection();
+        
+        graficoFitness.addSeries(melhorFitness);
+        graficoFitness.addSeries(mediaFitness);
+        
+        JFreeChart chartQtde = ChartFactory.createXYLineChart("Imagem x Época", "Época", "Imagem", graficoFitness, PlotOrientation.VERTICAL, true, true, false);
+        
+        OutputStream imgGraf1 = new FileOutputStream("Fitness.png");
+        ChartUtilities.writeChartAsPNG(imgGraf1, chartQtde, 2000, 1000);
+        
+        
+        GerarGrafico.exec(melhorFitness, mediaFitness, "Imagem x Época");
+        
     }
 
     public static void generatePopulation(Individual population[]) {
@@ -159,7 +190,7 @@ public class DiferencialEvolution {
     }
 
     public static void calculate_fitness_population(Individual[] population) {
-        
+
         for (int i = 0; i < population.length; i++) {
             calculate_fitness_individual(population[i]);
         }
