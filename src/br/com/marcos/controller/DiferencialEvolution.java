@@ -44,7 +44,7 @@ public class DiferencialEvolution {
             generate_new_population(population);
             Individual betterIndividual = get_better_individual(population);
             double media = get_avg_fitness_population(population);
-            System.out.println("img ind melhor Fitness: X=" + betterIndividual.getX() + " Y=" + betterIndividual.getY() + " F= " + betterIndividual.getFitness() + " img Média individuos: " + media);
+            System.out.println("ind melhor Fitness: X=" + betterIndividual.getX() + " Y=" + betterIndividual.getY() + " F= " + betterIndividual.getFitness() + " img Média individuos: " + media);
             melhorFitness.add(i, betterIndividual.getFitness());
             mediaFitness.add(i, media);
         }
