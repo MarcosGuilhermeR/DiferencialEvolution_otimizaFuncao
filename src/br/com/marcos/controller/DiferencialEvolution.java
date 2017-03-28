@@ -29,12 +29,10 @@ public class DiferencialEvolution {
     static final int AMOUNT_INDIVIDUALS = 20;
     static final double F = 0.5;
 
-    
-
     public static void main(String[] args) throws FileNotFoundException, IOException {
         XYSeries melhorFitness = new XYSeries("Imagem Melhor Fitness");
         XYSeries mediaFitness = new XYSeries("Imagem Media Indivíduos");
-    
+
         population = new Individual[AMOUNT_INDIVIDUALS];
 
         generatePopulation(population);
@@ -48,20 +46,19 @@ public class DiferencialEvolution {
             melhorFitness.add(i, betterIndividual.getFitness());
             mediaFitness.add(i, media);
         }
-        
+
         XYSeriesCollection graficoFitness = new XYSeriesCollection();
-        
+
         graficoFitness.addSeries(melhorFitness);
         graficoFitness.addSeries(mediaFitness);
-        
+
         JFreeChart chartQtde = ChartFactory.createXYLineChart("Imagem x Época", "Época", "Imagem", graficoFitness, PlotOrientation.VERTICAL, true, true, false);
-        
+
         OutputStream imgGraf1 = new FileOutputStream("Fitness.png");
         ChartUtilities.writeChartAsPNG(imgGraf1, chartQtde, 2000, 1000);
-        
-        
+
         GerarGrafico.exec(melhorFitness, mediaFitness, "Imagem x Época");
-        
+
     }
 
     public static void generatePopulation(Individual population[]) {
@@ -142,8 +139,22 @@ public class DiferencialEvolution {
         ind_diference.setX(F * (ind1.getX() - ind2.getX()));
         ind_diference.setY(F * (ind1.getY() - ind2.getY()));
 
-        ind_noise.setX(ind_diference.getX() + ind3.getX());
-        ind_noise.setY(ind_diference.getY() + ind3.getY());
+        double x = ind_diference.getX() + ind3.getX();
+        double y = ind_diference.getY() + ind3.getY();
+
+        if (x > 10) {
+            x = 10;
+        } else if (x < -10) {
+            x = -10;
+        }
+
+        if (y > 10) {
+            y = 10;
+        } else if (y < -10) {
+            y = -10;
+        }
+        ind_noise.setX(x);
+        ind_noise.setY(y);
 
         return ind_noise;
     }
